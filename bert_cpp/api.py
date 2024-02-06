@@ -65,7 +65,7 @@ _lib.bert_tokenize_c.argtypes = [
 def bert_tokenize(ctx, text, n_max_tokens):
     tokens = np.zeros(n_max_tokens, dtype=np.int32)
     tokens_p = tokens.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
-    _lib.bert_tokenize_c(ctx, text.encode('utf-8'), tokens_p, n_max_tokens)
+    n_tokens = _lib.bert_tokenize_c(ctx, text.encode('utf-8'), tokens_p, n_max_tokens)
     return tokens[:n_tokens]
 
 # detokenize
@@ -80,7 +80,8 @@ _lib.bert_detokenize_c.argtypes = [
 ]
 def bert_detokenize(ctx, tokens, max_len, debug):
     n_input = len(tokens)
-    output = ctypes.create_string_buffer(n_output)
+    tokens = np.asarray(tokens, dtype=np.int32)
+    output = ctypes.create_string_buffer(max_len)
     tokens_p = tokens.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
     _lib.bert_detokenize_c(ctx, tokens_p, output, n_input, max_len, debug)
     return output.value.decode('utf-8')

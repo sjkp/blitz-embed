@@ -16,7 +16,7 @@ def increment_pointer(p, d):
 
 # main bert interface
 class BertModel:
-    def __init__(self, fname, max_tokens=None, batch_size=32, use_cpu=False, verbose=False):
+    def __init__(self, fname, max_tokens=None, batch_size=32, use_cpu=False, allocate=True, verbose=False):
         # load model from file
         with suppress_stdout_stderr(disable=verbose):
             self.ctx = api.bert_load_from_file(fname, use_cpu)
@@ -24,21 +24,26 @@ class BertModel:
             raise ValueError(f'Failed to load model from file: {fname}')
 
         # get model dimensions
+        self.verbose = verbose
         self.n_embd = api.bert_n_embd(self.ctx)
-        self.n_max_tokens = api.bert_n_max_tokens(self.ctx) if max_tokens is None else max_tokens
-        self.batch_size = batch_size
+        self.n_max_tokens = api.bert_n_max_tokens(self.ctx)
 
         # allocate compute buffers
-        with suppress_stdout_stderr(disable=verbose):
-            api.bert_allocate_buffers(self.ctx, self.n_max_tokens, self.batch_size)
+        if allocate:
+            self.allocate(batch_size, max_tokens)
 
     def __del__(self):
         api.bert_free(self.ctx)
 
-    def tokenize(self, text, n_max_tokens=None):
-        if n_max_tokens is None:
-            n_max_tokens = api.bert_n_max_tokens(self.ctx)
-        return api.bert_tokenize(self.ctx, text, n_max_tokens)
+    def allocate(self, batch_size, max_tokens=None):
+        self.batch_size = batch_size
+        self.max_tokens = max_tokens if max_tokens is not None else self.n_max_tokens
+        with suppress_stdout_stderr(disable=self.verbose):
+            api.bert_allocate_buffers(self.ctx, self.max_tokens, self.batch_size)
+
+    def tokenize(self, text, max_tokens=None):
+        max_tokens = self.n_max_tokens if max_tokens is None else max_tokens
+        return api.bert_tokenize(self.ctx, text, max_tokens)
 
     def detokenize(self, tokens, max_fact=16, debug=False):
         max_len = len(tokens) * max_fact

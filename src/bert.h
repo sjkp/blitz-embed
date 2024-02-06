@@ -122,7 +122,7 @@ struct bert_ctx {
     bert_vocab vocab;
 
     // ggml context
-    struct ggml_context * ctx_data;
+    struct ggml_context * ctx_data = NULL;
 
     // compute metadata
     std::vector<uint8_t> buf_compute_meta;
