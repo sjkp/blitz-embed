@@ -12,6 +12,7 @@ MODEL_DIR = 'models'
 
 MODEL_LIST = [
     ('BAAI/bge-base-en-v1.5', 16),
+    ('BAAI/bge-base-zh-v1.5', 16),
     ('BAAI/bge-m3', 16)
 ]
 
