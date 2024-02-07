@@ -92,18 +92,19 @@ _lib.bert_encode_batch_c.argtypes = [
     ctypes.POINTER(ctypes.c_char_p), # const char ** texts
     ctypes.POINTER(ctypes.c_float),  # float * embeddings
     ctypes.c_int32,                  # int32_t n_inputs
+    ctypes.c_bool,                   # bool normalize
     ctypes.c_int32,                  # int32_t n_threads
 ]
-def bert_encode_batch_c(ctx, texts, embed_p, n_threads):
+def bert_encode_batch_c(ctx, texts, embed_p, normalize, n_threads):
     n_inputs = len(texts)
     strings = (ctypes.c_char_p * n_inputs)()
     for j, s in enumerate(texts):
         strings[j] = s.encode('utf-8')
-    return _lib.bert_encode_batch_c(ctx, strings, embed_p, n_inputs, n_threads)
-def bert_encode_batch(ctx, texts, n_threads):
+    return _lib.bert_encode_batch_c(ctx, strings, embed_p, n_inputs, normalize, n_threads)
+def bert_encode_batch(ctx, texts, normalize, n_threads):
     n_inputs = len(texts)
     n_embd = bert_n_embd(ctx)
     embed = np.zeros((n_inputs, n_embd), dtype=np.float32)
     embed_p = embeddings.ctypes.data_as(ctypes.POINTER(ctypes.c_float))
-    bert_encode_batch_c(ctx, texts, embed_p, n_threads)
+    bert_encode_batch_c(ctx, texts, embed_p, normalize, n_threads)
     return embed

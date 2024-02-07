@@ -49,15 +49,15 @@ typedef std::vector<bert_string> bert_strings;
 // data structures
 //
 
-// default hparams (all-MiniLM-L6-v2)
+// model params
 struct bert_hparams {
-    int32_t n_vocab = 30522;
-    int32_t n_max_tokens = 512;
-    int32_t n_embd = 256;
-    int32_t n_intermediate = 1536;
-    int32_t n_head = 12;
-    int32_t n_layer = 6;
-    float_t layer_norm_eps = 1e-12;
+    int32_t n_vocab;
+    int32_t n_max_tokens;
+    int32_t n_embd;
+    int32_t n_intermediate;
+    int32_t n_head;
+    int32_t n_layer;
+    float_t layer_norm_eps;
 };
 
 struct bert_layer {
@@ -154,13 +154,15 @@ BERT_API void bert_free(bert_ctx * ctx);
 
 BERT_API ggml_cgraph * bert_build_graph(
     bert_ctx * ctx,
-    bert_batch batch
+    bert_batch batch,
+    bool normalize
 );
 
 BERT_API void bert_forward_batch(
     bert_ctx * ctx,
     bert_batch tokens,
     float * embeddings,
+    bool normalize,
     int32_t n_thread
 );
 
@@ -168,6 +170,7 @@ BERT_API void bert_encode_batch(
     struct bert_ctx * ctx,
     bert_strings texts,
     float * embeddings,
+    bool normalize,
     int32_t n_threads
 );
 
@@ -176,6 +179,7 @@ BERT_API void bert_encode_batch_c(
     const char ** texts,
     float * embeddings,
     int32_t n_input,
+    bool normalize,
     int32_t n_threads
 );
 
@@ -211,6 +215,7 @@ BERT_API void bert_forward(
     struct bert_ctx * ctx,
     bert_tokens tokens,
     float * embeddings,
+    bool normalize,
     int32_t n_thread
 );
 
@@ -218,6 +223,7 @@ BERT_API void bert_encode(
     struct bert_ctx * ctx,
     bert_string text,
     float * embeddings,
+    bool normalize,
     int32_t n_threads
 );
 

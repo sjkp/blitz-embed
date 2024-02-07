@@ -49,13 +49,13 @@ class BertModel:
         max_len = len(tokens) * max_fact
         return api.bert_detokenize(self.ctx, tokens, max_len, debug)
 
-    def embed_batch(self, batch, output=None, n_threads=8):
+    def embed_batch(self, batch, output=None, normalize=True, n_threads=8):
         if output is None:
-            return api.bert_encode_batch(self.ctx, batch, n_threads)
+            return api.bert_encode_batch(self.ctx, batch, normalize, n_threads)
         else:
-            api.bert_encode_batch_c(self.ctx, batch, output, n_threads)
+            api.bert_encode_batch_c(self.ctx, batch, output, normalize, n_threads)
 
-    def embed(self, text, progress=False):
+    def embed(self, text, progress=False, **kwargs):
         # handle singleton case
         if isinstance(text, str):
             text = [text]
@@ -76,7 +76,7 @@ class BertModel:
             j = min(i + self.batch_size, n_input)
             batch = text[i:j]
             batch_p = increment_pointer(embed_p, i * self.n_embd)
-            self.embed_batch(batch, output=batch_p)
+            self.embed_batch(batch, output=batch_p, **kwargs)
 
         # return squeezed maybe
         return embed[0] if squeeze else embed

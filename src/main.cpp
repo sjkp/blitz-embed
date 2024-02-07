@@ -5,27 +5,29 @@
 #include <stdio.h>
 #include <vector>
 
-struct bert_params
+struct bert_options
 {
-    int32_t n_threads = 6;
-    const char* model = "models/bge-base-en-v1.5/ggml-model-f16.gguf";
-    const char* prompt = "hello world";
+    const char* model = nullptr;
+    const char* prompt = nullptr;
     int32_t n_max_tokens = 0;
     int32_t batch_size = 32;
     bool use_cpu = false;
+    bool normalize = true;
+    int32_t n_threads = 6;
 };
 
-void bert_print_usage(char **argv, const bert_params &params) {
+void bert_print_usage(char **argv, const bert_options &options) {
     fprintf(stderr, "usage: %s [options]\n", argv[0]);
     fprintf(stderr, "\n");
     fprintf(stderr, "options:\n");
     fprintf(stderr, "  -h, --help            show this help message and exit\n");
     fprintf(stderr, "  -s SEED, --seed SEED  RNG seed (default: -1)\n");
-    fprintf(stderr, "  -t N, --threads N     number of threads to use during computation (default: %d)\n", params.n_threads);
+    fprintf(stderr, "  -r --raw              don't normalize embeddings (default: normalize embeddings)\n");
+    fprintf(stderr, "  -t N, --threads N     number of threads to use during computation (default: %d)\n", options.n_threads);
     fprintf(stderr, "  -p PROMPT, --prompt PROMPT\n");
     fprintf(stderr, "                        prompt to start generation with (default: random)\n");
     fprintf(stderr, "  -m FNAME, --model FNAME\n");
-    fprintf(stderr, "                        model path (default: %s)\n", params.model);
+    fprintf(stderr, "                        model GGUF path\n");
     fprintf(stderr, "  -n N, --max-tokens N  number of tokens to generate (default: max)\n");
     fprintf(stderr, "  -b BATCH_SIZE, --batch-size BATCH_SIZE\n");
     fprintf(stderr, "                        batch size to use when executing model\n");
@@ -33,29 +35,43 @@ void bert_print_usage(char **argv, const bert_params &params) {
     fprintf(stderr, "\n");
 }
 
-bool bert_params_parse(int argc, char **argv, bert_params &params) {
+bool bert_options_parse(int argc, char **argv, bert_options &options) {
     for (int i = 1; i < argc; i++)
     {
         std::string arg = argv[i];
 
-        if (arg == "-t" || arg == "--threads") {
-            params.n_threads = std::stoi(argv[++i]);
+        if (arg == "-r" || arg == "--raw") {
+            options.normalize = false;
+        } else if (arg == "-t" || arg == "--threads") {
+            options.n_threads = std::stoi(argv[++i]);
         } else if (arg == "-p" || arg == "--prompt") {
-            params.prompt = argv[++i];
+            options.prompt = argv[++i];
         } else if (arg == "-m" || arg == "--model") {
-            params.model = argv[++i];
+            options.model = argv[++i];
         } else if (arg == "-n" || arg == "--max-tokens") {
-            params.n_max_tokens = std::stoi(argv[++i]);
+            options.n_max_tokens = std::stoi(argv[++i]);
         } else if (arg == "-c" || arg == "--cpu") {
-            params.use_cpu = true;
+            options.use_cpu = true;
         } else if (arg == "-h" || arg == "--help") {
-            bert_print_usage(argv, params);
+            bert_print_usage(argv, options);
             exit(0);
         } else {
             fprintf(stderr, "error: unknown argument: %s\n", arg.c_str());
-            bert_print_usage(argv, params);
+            bert_print_usage(argv, options);
             exit(0);
         }
+    }
+
+    if (options.model == nullptr) {
+        fprintf(stderr, "error: model file is required\n");
+        bert_print_usage(argv, options);
+        return false;
+    }
+
+    if (options.prompt == nullptr) {
+        fprintf(stderr, "error: prompt is required\n");
+        bert_print_usage(argv, options);
+        return false;
     }
 
     return true;
@@ -66,8 +82,8 @@ int main(int argc, char ** argv) {
     const int64_t t_main_start_us = ggml_time_us();
 
     // load cli arguments
-    bert_params params;
-    if (bert_params_parse(argc, argv, params) == false) {
+    bert_options options;
+    if (bert_options_parse(argc, argv, options) == false) {
         return 1;
     }
 
@@ -79,17 +95,17 @@ int main(int argc, char ** argv) {
     {
         const int64_t t_start_us = ggml_time_us();
 
-        bctx = bert_load_from_file(params.model, params.use_cpu);
+        bctx = bert_load_from_file(options.model, options.use_cpu);
         if (bctx == nullptr) {
-            fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, params.model);
+            fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, options.model);
             return 1;
         }
 
         // allocate buffers for length and batch size
-        if (params.n_max_tokens <= 0) {
-            params.n_max_tokens = bert_n_max_tokens(bctx);
+        if (options.n_max_tokens <= 0) {
+            options.n_max_tokens = bert_n_max_tokens(bctx);
         }
-        bert_allocate_buffers(bctx, params.n_max_tokens, params.batch_size);
+        bert_allocate_buffers(bctx, options.n_max_tokens, options.batch_size);
 
         t_load_us = ggml_time_us() - t_start_us;
     }
@@ -98,7 +114,7 @@ int main(int argc, char ** argv) {
 
     // tokenize the prompt
     int N = bert_n_max_tokens(bctx);
-    bert_tokens tokens = bert_tokenize(bctx, params.prompt, N);
+    bert_tokens tokens = bert_tokenize(bctx, options.prompt, N);
 
     int64_t t_mid_us = ggml_time_us();
     int64_t t_token_us = t_mid_us - t_start_us;
@@ -115,7 +131,7 @@ int main(int argc, char ** argv) {
 
     // run the embedding
     std::vector<float> embed(batch.size()*n_embd);
-    bert_forward_batch(bctx, batch, embed.data(), params.n_threads);
+    bert_forward_batch(bctx, batch, embed.data(), options.normalize, options.n_threads);
 
     int64_t t_end_us = ggml_time_us();
     int64_t t_eval_us = t_end_us - t_mid_us;

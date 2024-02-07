@@ -679,7 +679,7 @@ void bert_allocate_buffers(bert_ctx * ctx, int32_t n_max_tokens, int32_t batch_s
     for (int i = 0; i < batch_size; ++i) {
         batch.push_back(tokens);
     }
-    ggml_cgraph * gf = bert_build_graph(ctx, batch);
+    ggml_cgraph * gf = bert_build_graph(ctx, batch, true);
 
     // do computing graph measurement
     size_t compute_memory_buffer_size = ggml_allocr_alloc_graph(ctx->compute_alloc, gf);
@@ -734,7 +734,7 @@ void bert_free(bert_ctx * ctx) {
 // model execution
 //
 
-ggml_cgraph * bert_build_graph(bert_ctx * ctx, bert_batch batch) {
+ggml_cgraph * bert_build_graph(bert_ctx * ctx, bert_batch batch, bool normalize) {
     // vocab params
     const bert_vocab & vocab = ctx->vocab;
     const bert_token pad_id = vocab.pad_id;
@@ -919,8 +919,10 @@ ggml_cgraph * bert_build_graph(bert_ctx * ctx, bert_batch batch) {
     inpL = ggml_reshape_2d(ctx0, inpL, n_embd, n_batch_size); // [E, B]
 
     // l2 normalize
-    inpL = ggml_rms_norm(ctx0, inpL, layer_norm_eps); // [E, B]
-    inpL = ggml_scale_inplace(ctx0, inpL, 1.0f / sqrt((float)n_embd)); // [E, B] (since rms_norm does mean instead of sum)
+    if (normalize) {
+        inpL = ggml_rms_norm(ctx0, inpL, layer_norm_eps); // [E, B]
+        inpL = ggml_scale_inplace(ctx0, inpL, 1.0f / sqrt((float)n_embd)); // [E, B] (since rms_norm does mean instead of sum)
+    }
 
     // final output
     ggml_tensor * output = inpL;
@@ -935,12 +937,12 @@ ggml_cgraph * bert_build_graph(bert_ctx * ctx, bert_batch batch) {
     return gf;
 }
 
-void bert_forward_batch(bert_ctx * ctx, bert_batch batch, float * embeddings, int32_t n_threads) {
+void bert_forward_batch(bert_ctx * ctx, bert_batch batch, float * embeddings, bool normalize, int32_t n_threads) {
     // reset alloc buffer to clean the memory from previous invocations
     ggml_allocr_reset(ctx->compute_alloc);
 
     // build the compute graph
-    ggml_cgraph * gf = bert_build_graph(ctx, batch);
+    ggml_cgraph * gf = bert_build_graph(ctx, batch, normalize);
     if (gf == nullptr) {
         fprintf(stderr, "%s: failed to build compute graph\n", __func__);
         return;
@@ -974,7 +976,7 @@ void bert_forward_batch(bert_ctx * ctx, bert_batch batch, float * embeddings, in
     ggml_backend_tensor_get(output, embeddings, 0, ggml_nbytes(output));
 }
 
-void bert_encode_batch(struct bert_ctx * ctx, bert_strings texts, float * embeddings, int32_t n_threads) {
+void bert_encode_batch(struct bert_ctx * ctx, bert_strings texts, float * embeddings, bool normalize, int32_t n_threads) {
     int32_t N = bert_n_max_tokens(ctx);
     int32_t n_input = texts.size();
 
@@ -984,23 +986,23 @@ void bert_encode_batch(struct bert_ctx * ctx, bert_strings texts, float * embedd
         batch.push_back(tokens);
     }
 
-    bert_forward_batch(ctx, batch, embeddings, n_threads);
+    bert_forward_batch(ctx, batch, embeddings, normalize, n_threads);
 }
 
-void bert_encode_batch_c(struct bert_ctx * ctx, const char ** texts, float * embeddings, int32_t n_input, int32_t n_threads) {
+void bert_encode_batch_c(struct bert_ctx * ctx, const char ** texts, float * embeddings, int32_t n_input, bool normalize, int32_t n_threads) {
     bert_strings strings;
     for (int i = 0; i < n_input; i++) {
         strings.push_back(texts[i]);
     }
-    bert_encode_batch(ctx, strings, embeddings, n_threads);
+    bert_encode_batch(ctx, strings, embeddings, normalize, n_threads);
 }
 
-void bert_forward(struct bert_ctx * ctx, bert_tokens tokens, float * embeddings, int32_t n_threads) {
+void bert_forward(struct bert_ctx * ctx, bert_tokens tokens, float * embeddings, bool normalize, int32_t n_threads) {
     bert_batch batch = {tokens};
-    bert_forward_batch(ctx, batch, embeddings, n_threads);
+    bert_forward_batch(ctx, batch, embeddings, normalize, n_threads);
 }
 
-void bert_encode(struct bert_ctx * ctx, bert_string text, float * embeddings, int32_t n_threads) {
+void bert_encode(struct bert_ctx * ctx, bert_string text, float * embeddings, bool normalize, int32_t n_threads) {
     bert_strings strings = {text};
-    bert_encode_batch(ctx, strings, embeddings, n_threads);
+    bert_encode_batch(ctx, strings, embeddings, normalize, n_threads);
 }
