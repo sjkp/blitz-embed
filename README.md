@@ -1,5 +1,7 @@
 # bert.cpp
 
+**Note: Now that BERT support has been merged into [`llama.cpp`](https://github.com/ggerganov/llama.cpp), this repo is semi-defunct. The implementation in `llama.cpp` is substantially faster
+
 This is a [ggml](https://github.com/ggerganov/ggml) implementation of the BERT embedding architecture. It supports inference on CPU, CUDA and Metal in floating point and a wide variety of quantization schemes. Includes Python bindings for batched inference.
 
 This repo is a fork of original [bert.cpp](https://github.com/skeskinen/bert.cpp) as well as [embeddings.cpp](https://github.com/xyzhang626/embeddings.cpp). Thanks to both of you!
