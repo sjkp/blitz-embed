@@ -23,6 +23,7 @@ https://github.com/xyzhang626/embeddings.cpp
 #include <string>
 #include <vector>
 #include <cstring>
+#include <algorithm>
 
 #define BERT_MAX_NODES 4096
 
@@ -134,8 +135,7 @@ std::string strip_accents(const std::string &inputString) {
     return resultString;
 }
 
-std::string bert_normalize_prompt(const std::string &text)
-{
+std::string bert_normalize_prompt(const std::string &text) {
     // TODO: handle chinese characters? https://github.com/huggingface/tokenizers/blob/ef5f50605ddf9f8caef1598c0e4853862b9707a7/tokenizers/src/normalizers/bert.rs#L98
     std::string text2 = strip_accents(text);
     for (size_t i = 0; i < text2.size(); i += utf8_len(text2[i]))
@@ -843,7 +843,7 @@ ggml_cgraph * bert_build_graph(bert_ctx * ctx, bert_batch batch, bool normalize)
     inpL = ggml_add(ctx0, ggml_get_rows(ctx0, model.position_embeddings, positions), inpL);
     inpL = ggml_reshape_3d(ctx0, inpL, n_embd, cur_max_len, n_batch_size); // [E, L, B]
 
-    // embed layern norm
+    // embed layer norm
     inpL = ggml_norm_inplace(ctx0, inpL, layer_norm_eps);
     inpL = ggml_add(ctx0, ggml_mul(ctx0, inpL, model.ln_e_w), model.ln_e_b); // [E, L, B]
 
