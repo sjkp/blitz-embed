@@ -96,36 +96,35 @@ print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " 
 
 ### MTEB benchmarks
 
-From other forks
+Consolidated from other forks
 
+MTEB (Massive Text Embedding Benchmark) for GGUF bert.cpp models vs. [sbert](https://sbert.net/) on CPU. All these benchmarks were run batchless before, the latest fork i.e this one supports batch inference.
 
+### all-MiniLM-L6-v2
+| Data Type | STSBenchmark | eval time | EmotionClassification | eval time | 
+|-----------|-----------|------------|-----------|------------|
+| GGUF f32 | 0.8201 | 6.83 | 0.4082 | 11.34 | 
+| GGUF f16 | 0.8201 | 6.17 | 0.4085 | 10.28 | 
+| GGUF q4_0 | 0.8175 | 5.45 | 0.3911 | 10.63 | 
+| GGUF q4_1 | 0.8223 | 6.79 | 0.4027 | 11.41 | 
+| Vanilla sbert-batchless | 0.8203 | 13.10 | 0.4085 | 15.52 | 
 
-### Install
+### all-MiniLM-L12-v2
+| Data Type | STSBenchmark | eval time | EmotionClassification | eval time | 
+|-----------|-----------|------------|-----------|------------|
+| GGUF f32 | 0.8306 | 13.36 | 0.4117 | 21.23 | 
+| GGUF f16 | 0.8306 | 11.51 | 0.4119 | 20.08 | 
+| GGUF q4_0 | 0.8310 | 11.27 | 0.4183 | 20.81 | 
+| GGUF q4_1 | 0.8325 | 12.37 | 0.4093 | 19.38 | 
+| Vanilla sbert-batchless | 0.8309 | 22.81 | 0.4117 | 28.04 | 
 
-Fetch this repository then download submodules and install packages with
-```sh
-git submodule update --init
-pip install -r requirements.txt
-```
-
-To fetch models from `huggingface` and convert them to `gguf` format run something like the following (after creating the `models` directory)
-```sh
-python bert_cpp/convert.py BAAI/bge-base-en-v1.5 models/bge-base-en-v1.5-f16.gguf
-```
-This will convert to `float16` by default. To do `float32` add `f32` to the end of the command.
-
-### Build
-
-To build the C++ library for CPU/CUDA/Metal, run the following
-```sh
-# CPU
-cmake -B build . && make -C build -j
-
-# CUDA
-cmake -DGGML_CUBLAS=ON -B build . && make -C build -j
-
-# Metal
-cmake -DGGML_METAL=ON -B build . && make -C build -j
-```
-On some distros, when compiling with CUDA, you also need to specify the host C++ compiler. To do this, I suggest setting the `CUDAHOSTCXX` environment variable to your C++ bindir.
+### BGE_base_en_v1.5
+| Data Type | STSBenchmark | eval time | 
+|-----------|-----------|------------|
+| GGUF f32 | 0.8530 | 20.04 | 
+| GGUF f16 | 0.8530 | 21.82 | 
+| GGUF q4_0 | 0.8509 | 18.78 | 
+| GGUF q4_0-batchless | 0.8509 | 35.97 |
+| GGUF q4_1 | 0.8568 | 18.77 |
+| Vanilla sbert-batchless | 0.8464 | 64.58 | 
 
