@@ -96,7 +96,7 @@ print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " 
 
 ### MTEB benchmarks
 
-Consolidated from other forks
+Legacy MTEB scores, Consolidated from other forks for reference.
 
 MTEB (Massive Text Embedding Benchmark) for GGUF bert.cpp models vs. [sbert](https://sbert.net/) on CPU. All these benchmarks were run batchless before, the latest fork i.e this one supports batch inference.
 
