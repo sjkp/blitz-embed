@@ -16,6 +16,7 @@ functions:
   encoder:
     image:
       name: img
+    memorySize: 10240  
     events:
     - http:
         path: encode

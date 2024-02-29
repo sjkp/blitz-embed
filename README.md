@@ -13,7 +13,7 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - Quantisation options - `q8_0`, `q5_0`, `q5_1`, `q4_0`, and `q4_1`.
 - Super Economical $ compared to ONNX (owing to smaller size, quicker runtime)
 - Supports any BERT based embedders. 
-- Tested on: 
+- Smart folks have tested on: BAAI/bge* models like bge-base-en-v1.5 and Sentence Transformers/all-MiniLM* models like all-MiniLM-L6-v2.
 
 ## Who is it for ?
 - Any one who wants to run a perfomant / cost efficent embedding service on SoTA embedders.
@@ -40,10 +40,10 @@ cd blitz-embed
 # 2. Setup Serverless for AWS if you haven't
 ```
 
-    `AWS IAM user Dashboard`, 
+    Goto AWS IAM user Dashboard
     Create or reuse a user.
-    Add `AdministratorAccess` permissions tab
-    Get your_key and your_secret from `Security Credentials` tab
+    Add AdministratorAccess permissions tab
+    Get your_key and your_secret from Security Credentials tab
 
 
 ```sh
@@ -93,6 +93,9 @@ print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " 
 - C++ Azure functions handler + Docker file.
 - Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
 
+### Why 4-bit quantisation is recommended ?
+`Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
+that 4-bit quantisation yields "best bit by bit performance" for a model.
 
 ### MTEB benchmarks
 

@@ -73,7 +73,7 @@ RUN cmake -B build . && make -C build -j
 WORKDIR /opt
 RUN yum install -y curl
 RUN curl -L -o /opt/bge-base-en-v1.5-q4_0.gguf https://huggingface.co/prithivida/bge-base-en-v1.5-gguf/resolve/main/bge-base-en-v1.5-q4_0.gguf
-RUN curl -L -o /opt/bge-base-en-v1.5-f32.gguf https://huggingface.co/prithivida/bge-base-en-v1.5-gguf/resolve/main/bge-base-en-v1.5-f32.gguf
+# RUN curl -L -o /opt/bge-base-en-v1.5-f32.gguf https://huggingface.co/prithivida/bge-base-en-v1.5-gguf/resolve/main/bge-base-en-v1.5-f32.gguf
 
 
 # Copy the built application to the lambda runtime base image
@@ -82,14 +82,14 @@ COPY --from=build /content/blitz-embed/build/bin/encode /var/task/encode
 COPY --from=build /content/blitz-embed/build/src/libbert.so /var/task/libbert.so
 COPY --from=build /content/blitz-embed/build/ggml/src/libggml.so /var/task/libggml.so
 COPY --from=build /opt/bge-base-en-v1.5-q4_0.gguf /opt/bge-base-en-v1.5-q4_0.gguf
-COPY --from=build /opt/bge-base-en-v1.5-f32.gguf /opt/bge-base-en-v1.5-f32.gguf
+# COPY --from=build /opt/bge-base-en-v1.5-f32.gguf /opt/bge-base-en-v1.5-f32.gguf
 
 RUN chmod +x /var/task/encode
 RUN chmod 644 /var/task/libbert.so
 RUN chmod 644 /var/task/libggml.so  
 
 RUN chmod 644 /opt/bge-base-en-v1.5-q4_0.gguf
-RUN chmod 644 /opt/bge-base-en-v1.5-f32.gguf
+# RUN chmod 644 /opt/bge-base-en-v1.5-f32.gguf
 
 
 ENV LD_LIBRARY_PATH=/var/task:$LD_LIBRARY_PATH
