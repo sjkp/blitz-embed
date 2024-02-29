@@ -1,7 +1,7 @@
 
-<center>
-  <img alt="Blitz-Embed Library Icon" src="logo.png" width="800" height="300" style="max-width: 100%;">
-</center>
+<p align="center">
+  <img alt="Blitz-Embed Library Icon" src="logo.png" width="800" height="100">
+</p>
 
 ## What is it ?
 C++ inference wrappers for running blazing fast embedding services on your favourite serverless.
