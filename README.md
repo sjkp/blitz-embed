@@ -1,16 +1,8 @@
 
-<p align="center">
-  <table>
-    <tr>
-      <td>
-        <img alt="Blitz-Embed Library Icon" src="./blitz.webp" width="80" height="80" style="max-width: 100%;">
-      </td>
-      <td style="text-align: left; vertical-align: middle; padding-left: 2px;">
-        <span style="font-size: 34px; font-weight: bold;">Blitz Embed</span>
-      </td>
-    </tr>
-  </table>
-</p>
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img alt="Blitz-Embed Library Icon" src="./blitz.webp" width="120" height="120" style="max-width: 100%;">
+  <span style="font-size: 34px; font-weight: bold; padding-left: 20px;">Blitz Embed</span>
+</div>
 
 ## What is it ?
 C++ inference wrappers for running blazing fast embedding services on your favourite serverless.
