@@ -24,6 +24,19 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - Prepackaged Dockerfiles for AWS Lambda.
 - GGUF files in `HuggingFace`.
 
+### Roadmap
+- C++ GCP functions handler + Docker file.
+- C++ Azure functions handler + Docker file.
+- Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
+- Add support for Matryoshka embeddings.
+- Extend GPU support for standalone deployments.
+- Bring in developments embedding related from llama.cpp.
+
+### Why 4-bit quantisation is recommended ?
+`Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
+that 4-bit quantisation yields "best bit by bit performance" for a model.
+
+
 
 ### How to launch a embedding service in AWS Lambda
 
@@ -87,16 +100,6 @@ emb = np.array(embeds, dtype="float32")
 print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " ms") # / 1000 as this time comes in microseconds
 ```
 
-### Roadmap
-- C++ GCP functions handler + Docker file.
-- C++ Azure functions handler + Docker file.
-- Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
-- Add support for Matryoshka embeddings.
-- Extend GPU support for standalone deployments.
-
-### Why 4-bit quantisation is recommended ?
-`Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
-that 4-bit quantisation yields "best bit by bit performance" for a model.
 
 ### MTEB benchmarks
 
