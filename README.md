@@ -1,6 +1,5 @@
-
 <p align="center">
-  <img alt="Blitz-Embed Library Icon" src="logo.png" width="100%" height="130">
+  <img alt="Blitz-Embed Library Icon" src="logo.png" width="100%">
 </p>
 
 ## What is it ?
@@ -70,9 +69,10 @@ import numpy as np
 url = 'https://your-service-url.amazonaws.com/encode'
 payload = {
     "sent": [
-        "A",
-        "B",
-        "C"
+        "It's OK to be wrong. Just don't be confident and wrong.",
+        "Never ask your troops to do something you're not willing to do.",
+        "The only rules are the ones dictated by the laws of physics. Everything else is a recommendation.",
+        "When hiring, look for people with the right attitude. Skills can be taught. Attitude requires a brain transplant.",
     ],
     "model": "/opt/bge-base-en-v1.5-q4_0.gguf",
     "batch_size": 4,
@@ -87,11 +87,12 @@ emb = np.array(embeds, dtype="float32")
 print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " ms") # / 1000 as this time comes in microseconds
 ```
 
-
 ### Roadmap
 - C++ GCP functions handler + Docker file.
 - C++ Azure functions handler + Docker file.
 - Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
+- Add suport for Matryoshka.
+- Extend GPU support for standalone deployments.
 
 ### Why 4-bit quantisation is recommended ?
 `Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
