@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img alt="Blitz-Embed Library Icon" src="logo.png" width="800" height="100">
+  <img alt="Blitz-Embed Library Icon" src="logo.png" width="100%" height="130">
 </p>
 
 ## What is it ?
