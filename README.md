@@ -8,10 +8,10 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - Leverages`GGML BERT` implementations - forked with thanks from [bert.cpp + python bindings](https://github.com/iamlemec/bert.cpp), [bert.cpp](https://github.com/skeskinen/bert.cpp), [embeddings.cpp](https://github.com/xyzhang626/embeddings.cpp)
 - Bare-metal performance with e2e C++, No Python bindings.
 - Speed without compromise of quality.(See benchmarks)
-- Scale (`DIY Socket servers`, `vanilla HTTP` or `gRPC` deployments are no match to scale of Serverless like AWS lambda. Serverless also comes with great bells & whistles).
+- Scale (`DIY Socket servers`, `vanilla HTTP` or `gRPC` deployments are no match to the scale of Serverless like AWS lambda. Serverless also comes with great bells & whistles).
 - Quantisation options - `q8_0`, `q5_0`, `q5_1`, `q4_0`, and `q4_1`.
-- Super Economical $ compared to ONNX (owing to smaller size, quicker runtime)
-- Supports any BERT based embedders. 
+- Super Economical as you pay $ / invocations that are smaller + quicker runtime.
+- Supports BERT based embedders. 
 - Smart folks have tested on: BAAI/bge* models like bge-base-en-v1.5 and Sentence Transformers/all-MiniLM* models like all-MiniLM-L6-v2.
 
 ## Who is it for ?
@@ -91,7 +91,7 @@ print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " 
 - C++ GCP functions handler + Docker file.
 - C++ Azure functions handler + Docker file.
 - Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
-- Add suport for Matryoshka.
+- Add support for Matryoshka embeddings.
 - Extend GPU support for standalone deployments.
 
 ### Why 4-bit quantisation is recommended ?
