@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Blitz-Embed Library Icon" src="logo.png" width="100%">
+  <img alt="Blitz-Embed Library Icon" src="logo.png" width="60%">
 </p>
 
 ## What is it ?
