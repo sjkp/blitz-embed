@@ -5,6 +5,9 @@
 # ggml includes
 include_directories(${CMAKE_SOURCE_DIR}/ggml/src ${CMAKE_SOURCE_DIR}/ggml/include/ggml)
 
+# Specify the linker to search in /usr/local/lib
+link_directories(/usr/local/lib)
+
 # bert (shared) library
 add_library(bert bert.cpp bert.h)
 target_compile_features(bert PUBLIC cxx_std_20)
@@ -14,8 +17,8 @@ set_target_properties(bert PROPERTIES
 target_link_libraries(bert PRIVATE ggml)
 
 # main entry
-add_executable(main main.cpp)
-target_link_libraries(main PRIVATE bert ggml)
+add_executable(encode run_aws.cpp)
+target_link_libraries(encode PRIVATE bert ggml aws-lambda-runtime curl)
 
 # quantization
 add_executable(quantize quantize.cpp)

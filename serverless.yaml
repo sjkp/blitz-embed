@@ -1,0 +1,23 @@
+service: blitz-embed
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  
+  stage: dev
+  region: ap-south-1
+  ecr:
+    images:
+      img:
+        path: ./
+        platform: linux/amd64
+
+functions:
+  encoder:
+    image:
+      name: img
+    events:
+    - http:
+        path: encode
+        method: post
+        cors: true
