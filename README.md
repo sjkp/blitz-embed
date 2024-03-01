@@ -8,11 +8,13 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - Leverages`GGML BERT` implementations - forked with thanks from [bert.cpp + python bindings](https://github.com/iamlemec/bert.cpp), [bert.cpp](https://github.com/skeskinen/bert.cpp), [embeddings.cpp](https://github.com/xyzhang626/embeddings.cpp)
 - Bare-metal performance with e2e C++, No Python bindings.
 - Speed without compromise of quality.(See benchmarks)
-- Scale (`DIY Socket servers`, `vanilla HTTP` or `gRPC` deployments are no match to the scale of Serverless like AWS lambda. Serverless also comes with great bells & whistles).
+- Scale (`DIY Socket servers`, `vanilla HTTP` or `gRPC` deployments are no match to the scale or $ of Serverless like AWS lambda. ).
 - Quantisation options - `q8_0`, `q5_0`, `q5_1`, `q4_0`, and `q4_1`.
-- Super Economical as you pay $ / invocations that are smaller + quicker runtime.
-- Supports BERT based embedders. 
-- Smart folks have tested on: BAAI/bge* models like bge-base-en-v1.5 and Sentence Transformers/all-MiniLM* models like all-MiniLM-L6-v2.
+- Super Economical as you pay / invocations that are tiny + quicker runtimes.
+- Supports `BERT based embedders`. (Any lang)
+- Smart folks have tested on: `BAAI/bge* models like bge-base-en-v1.5 and Sentence Transformers/all-MiniLM* models like all-MiniLM-L6-v2`.
+- [Pre-quantised models to get started](https://huggingface.co/collections/prithivida/gguf-models-65e12c930890daf03e7e42ea).
+- Optionally deploy on CUDA infra for GPU support.
 
 ## Who is it for ?
 - Any one who wants to run a perfomant / cost efficent embedding service on SoTA embedders.
@@ -25,12 +27,16 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - GGUF files in `HuggingFace`.
 
 ### Roadmap
+<details>
+<summary>Features</summary>
+
 - C++ GCP functions handler + Docker file.
 - C++ Azure functions handler + Docker file.
 - Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
 - Add support for Matryoshka embeddings.
 - Extend GPU support for standalone deployments.
 - Bring in developments embedding related from llama.cpp.
+</details>
 
 ### Why 4-bit quantisation is recommended ?
 `Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
@@ -38,9 +44,9 @@ that 4-bit quantisation yields "best bit by bit performance" for a model.
 
 
 
-### How to launch a embedding service in AWS Lambda
-
-    Steps Involved
+### Install & launch a embedding service in AWS Lambda
+<details open>
+<summary>Steps Involved</summary>
 
 ```sh
 
@@ -69,9 +75,11 @@ Use npm install -g serverless
 # ensure docker daemon is running
 serverless deploy
 ```
-
+</details>
 
 ### Calling embedding service in your app
+<details open>
+<summary>Python snippet</summary>
 
 ```python
 import requests
@@ -99,9 +107,13 @@ embeds = json.loads(resp_obj["embedding"])
 emb = np.array(embeds, dtype="float32")
 print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " ms") # / 1000 as this time comes in microseconds
 ```
+</details>
 
 
 ### MTEB benchmarks
+<details>
+<summary>Numbers</summary>
+
 
 Legacy MTEB scores, Consolidated from other forks for reference.
 
@@ -135,3 +147,4 @@ MTEB (Massive Text Embedding Benchmark) for GGUF bert.cpp models vs. [sbert](htt
 | GGUF q4_1 | 0.8568 | 18.77 |
 | Vanilla sbert-batchless | 0.8464 | 64.58 | 
 
+</details>
