@@ -110,6 +110,31 @@ print("Tokenisation and Inference time", round(resp_obj["itime"], 1) * 0.001, " 
 ```
 </details>
 
+### Exporting and Quantising Huggingface models
+
+#### Install 
+```python
+git clone https://github.com/PrithivirajDamodaran/blitz-embed.git
+cd blitz-embed
+git submodule update --init --recursive
+pip install -r requirements.txt
+cmake -B build . && make -C build -j
+```
+#### Convert
+
+default is f32, for f16 you need to as pass param as below
+
+```python
+mkdir models
+python blitz-embed/convert.py BAAI/bge-base-en-v1.5 models/bge-base-en-v1.5-f16.gguf f16
+```
+
+#### Quantize
+You need to pass any one of the options - `q8_0`, `q5_0`, `q5_1`, `q4_0`, and `q4_1`.
+
+```python
+build/bin/quantize models/bge-base-en-v1.5-f32.gguf models/bge-base-en-v1.5-q4_0.gguf q4_0
+```
 
 ### MTEB benchmarks
 <details>
