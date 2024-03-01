@@ -5,7 +5,7 @@
 ## What is it ?
 C++ inference wrappers for running blazing fast embedding services on your favourite serverless.
 
-- Leverages`GGML BERT` implementations - forked with thanks from [bert.cpp + python bindings](https://github.com/iamlemec/bert.cpp), [bert.cpp](https://github.com/skeskinen/bert.cpp), [embeddings.cpp](https://github.com/xyzhang626/embeddings.cpp)
+- Leverages`GGML BERT` implementations.
 - Bare-metal performance with e2e C++, No Python bindings.
 - Speed without compromise of quality.(See benchmarks)
 - Scale (`DIY Socket servers`, `vanilla HTTP` or `gRPC` deployments are no match to the scale or $ of Serverless like AWS lambda. ).
@@ -15,6 +15,7 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 - Smart folks have tested on: `BAAI/bge* models like bge-base-en-v1.5 and Sentence Transformers/all-MiniLM* models like all-MiniLM-L6-v2`.
 - [Pre-quantised models to get started](https://huggingface.co/collections/prithivida/gguf-models-65e12c930890daf03e7e42ea).
 - Optionally deploy on CUDA infra for GPU support.
+- Forked with thanks from [bert GGML + python bindings](https://github.com/iamlemec/bert.cpp), [bert.cpp](https://github.com/skeskinen/bert.cpp), [embeddings.cpp](https://github.com/xyzhang626/embeddings.cpp)
 
 ## Who is it for ?
 - Any one who wants to run a perfomant / cost efficent embedding service on SoTA embedders.
