@@ -19,13 +19,13 @@ Google Cloud functions C++ Wrappers | ⛔ |
 
 **Due to their resource scaling logic:**  C++ Inference runs are CPU bound but needs very less working memory. While like all serverless lambda charges you based on the runtime X provisioned memory, **you cannot choose vCPUs and Memory seperately to get max CPUs is to set memory to 10Gb** and it blow up the lambda cost. [AWS is also open about it](aws_scam.png)
 
-Here is a math on who can go for AWS Lambda serverless embedding:
+Here is a math on what to expect if you run AWS Lambda serverless:
 
-Lambda offers free quota every month **1M req /mo and 400,000 GB-sec**
+- Lambda offers free quota **1M req /mo and 400,000 GB-sec**.
 - Batch = 1, 512 tokens it takes ~1000ms at 10GB rate you can do max of 37K embeddings before you exhaust your free quota. 
-- At this rate it will cost $0.36 / Million tokens.
+- After that at this rate it will cost $0.36 / Million tokens.
 - Batch = 6, 64 tokens each takes ~673ms at 10GB rate you can do max of 60K embeddings before you exhaust your free quota.
-- At this rate it will cost $0.291 / Million tokens.
+- - After that at this rate it will cost $0.291 / Million tokens.
 
 This is all to say in AWS high volume (1M+) embeddings would cost a lot.
 
