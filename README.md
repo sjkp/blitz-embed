@@ -2,22 +2,25 @@
   <img alt="Blitz-Embed Library Icon" src="logo2.png" width="100%">
 </p>
 
-## Status - \[updated 3rd March 2024\]
-| Serverless Provider | Dev Status | Provider billing remarks                  
-|----------|:---------------------:|--------------------------|
-Google Cloud Run C++ Wrappers | ✅ | **Billed by pure usage CPU x Memory**|
-AWS Lambda C++ Wrappers | ✅ |Billed by CPU usage x Provisioned Memory|
+### Status - \[updated 3rd March 2024\]
+
+
+| Serverless Provider | Dev Status | Provider billing logic |        Recommendation          |
+|----------|:---------------------:|:--------------------------|--------------------------|
+Google Cloud Run C++ Wrappers | ✅ | **Billed by pure usage CPU x Memory**| Works well |
+AWS Lambda C++ Wrappers | ✅ |Billed by CPU usage x Provisioned Memory| proceed with caution, read below|
 Google Cloud functions C++ Wrappers | ⛔ | 
 Azure Functions C++ Wrappers | ⛔ | 
 
-**<font color="red">\[DO NOT LAUNCH WITH AWS LAMBDA\]:</font>** Until,
+-----
+<br/>
+<br/>
 
-- Option 1: Either AWS allows us to increase vCPUs without having to increase memory.
-- Option 2: Or Charged us for run time x used memory (and not allocated memory).
-- (I will update this notice if either happens.)
+**<font color="red">\[WHY AWS LAMBDA IS NOT FOR ALL\]:</font>** 
+
+**Due to their billing logic:**  C++ Inference runs are CPU bound but needs very less working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get more CPUs is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
 
 
-**<font color="red">\[WHEN NOT TO USE AWS LAMBDA\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get best runtime performance is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
 
 **References:**
 
@@ -151,6 +154,13 @@ print("Tokenisation and Inference time", round(resp_body["itime"], 1) * 0.001, "
 
 git clone https://github.com/PrithivirajDamodaran/blitz-embed.git
 cd blitz-embed
+mv Dockerfile-aws Dockerfile
+
+# Goto src/CMakeLists.txt under "# main entry"
+Uncomment # add_executable(encode run_aws.cpp)   
+Comment   add_executable(encode run_gcr.cpp)
+Uncomment # target_link_libraries(encode PRIVATE bert ggml aws-lambda-runtime curl)
+Comment target_link_libraries(encode PRIVATE bert ggml curl)
 
 # 2. Setup Serverless for AWS if you haven't
 ```
