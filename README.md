@@ -5,10 +5,10 @@
 ### Status - \[updated 3rd March 2024\]
 
 
-| Serverless Provider | Dev Status | Provider billing logic |        Recommendation          |
+| Serverless Provider | Dev Status | Provider billing logic |        Details          |
 |----------|:---------------------:|:--------------------------|--------------------------|
-Google Cloud Run C++ Wrappers | ✅ | **Usage: CPU x Memory**| Works well |
-AWS Lambda C++ Wrappers | ✅ |CPU usage x Provisioned Memory| Proceed with caution, read below|
+Google Cloud Run C++ Wrappers | ✅ | Runtime x Allocated Memory**| You can choose CPU and Memory seperately |
+AWS Lambda C++ Wrappers | ✅ |Runtime * Allocated Memorys| Proceed with caution, You can choose only Memory|
 Azure Functions C++ Wrappers | WIP | 
 Google Cloud functions C++ Wrappers | ⛔ | 
 
@@ -17,9 +17,17 @@ Google Cloud functions C++ Wrappers | ⛔ |
 ----
 
 
-**Due to their billing logic:**  C++ Inference runs are CPU bound but needs very less working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get more CPUs is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
+**Due to their billing logic:**  C++ Inference runs are CPU bound but needs very less working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory). So only way to get max CPUs is to set memory to 10Gb but ut blow up the lambda cost. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
 
+Here is a math on who can go for AWS Lambda serverless embedding:
 
+Lambda offers free quota every month **1M req /mo and 400,000 GB-sec**
+- Batch = 1, 512 tokens it takes ~1000ms at 10GB rate you can do max of 37K embeddings before you exhaust your free quota. 
+- At this rate it will cost $0.36 / Million tokens.
+- Batch = 6, 64 tokens each takes ~673ms at 10GB rate you can do max of 60K embeddings before you exhaust your free quota.
+- At this rate it will cost $0.291 / Million tokens.
+
+This is all to say in AWS high volume (1M+) embeddings would cost a lot.
 
 **References:**
 
