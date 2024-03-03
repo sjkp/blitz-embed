@@ -42,7 +42,7 @@ public:
         options.batch_size = batch_size;
         options.normalize = normalize;
         unsigned int max_threads = std::thread::hardware_concurrency();
-        printf("Max threads %d\n", max_threads);
+        fprintf(stderr, "Max threads %d\n", max_threads);
         options.n_threads = max_threads;
 
         ggml_time_init();
@@ -59,7 +59,7 @@ public:
 
         bert_allocate_buffers(bctx.get(), options.n_max_tokens, options.batch_size);
         int64_t t_end_us = ggml_time_us();
-        printf("Model loaded in %0.2f ms\n", (t_end_us - t_start_us) / 1000.0);
+        fprintf(stderr, "Model loaded in %0.2f ms\n", (t_end_us - t_start_us) / 1000.0);
     }
 
 
@@ -79,7 +79,7 @@ public:
             // Use bert_encode_batch to process all prompts
             bert_encode_batch(bctx.get(), prompts, embed.data(), options.normalize, options.n_threads);
             int64_t t_infer_us = ggml_time_us() - t_start_us;
-            printf("Tokenise and Infer time = %0.2f ms", t_infer_us / 1000.0); 
+            fprintf(stderr, "Tokenise and Infer time = %0.2f ms", t_infer_us / 1000.0); 
 
 
             // Format the embeddings into a list of lists
