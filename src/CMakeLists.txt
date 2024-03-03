@@ -17,7 +17,8 @@ set_target_properties(bert PROPERTIES
 target_link_libraries(bert PRIVATE ggml)
 
 # main entry
-add_executable(encode run_aws.cpp)
+# add_executable(encode run_aws.cpp)
+add_executable(encode run_gcr.cpp)
 target_link_libraries(encode PRIVATE bert ggml aws-lambda-runtime curl)
 
 # quantization
