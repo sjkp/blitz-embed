@@ -1,8 +1,7 @@
-# Use the same build stage as before
-FROM amazonlinux:2 as build
+FROM almalinux:8 as build
 
 # Install development tools and additional dependencies
-RUN yum install -y \
+RUN dnf install -y \
     git \
     libcurl-devel \
     openssl-devel \
@@ -11,16 +10,16 @@ RUN yum install -y \
     gzip \
     make \
     wget \
-    gcc-c++.x86_64 \
-    binutils
+    dnf-plugins-core
 
 # Install GCC 10
-RUN yum -y install gcc10.x86_64 gcc10-c++.x86_64 && \
-    ln -sf /usr/bin/gcc10 /usr/bin/gcc && \
-    ln -sf /usr/bin/g++10 /usr/bin/g++
+RUN dnf -y install gcc-toolset-10-gcc gcc-toolset-10-gcc-c++
+
+# Activate GCC 10 environment for subsequent commands
+SHELL ["/usr/bin/scl", "enable", "gcc-toolset-10"]
 
 # Verify the GCC version
-RUN g++ --version && gcc --version
+RUN gcc --version && g++ --version
 
 # Setup for CMake
 COPY ./cmake-3.22.0-linux-x86_64.tar.gz /tmp/cmake.tar.gz
@@ -28,6 +27,8 @@ RUN mkdir /opt/cmake && \
     tar -xzvf /tmp/cmake.tar.gz -C /opt/cmake --strip-components=1
 ENV PATH="/opt/cmake/bin:${PATH}"
 RUN cmake --version
+
+RUN dnf install -y binutils
 
 # Clone your repository and build your application
 WORKDIR /content
@@ -39,11 +40,11 @@ RUN cmake -B build . && make -C build -j
 
 # Install utilities
 WORKDIR /opt
-RUN yum install -y curl
+RUN dnf install -y curl
 RUN curl -L -o /opt/bge-base-en-v1.5-q4_0.gguf https://huggingface.co/prithivida/bge-base-en-v1.5-gguf/resolve/main/bge-base-en-v1.5-q4_0.gguf
 
-# Prepare the final image
-FROM amazonlinux:2
+# Prepare the final image from almalinux:8 for compatibility
+FROM almalinux:8
 WORKDIR /app
 COPY --from=build /content/blitz-embed/build/bin/* /app/
 COPY --from=build /content/blitz-embed/build/src/libbert.so /app/
@@ -60,4 +61,3 @@ ENV LD_LIBRARY_PATH=/app:$LD_LIBRARY_PATH
 
 # Ensure your application listens on the PORT environment variable
 CMD ["/app/encode"]
-
