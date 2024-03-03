@@ -8,7 +8,7 @@
 | Serverless Provider | Dev Status | Provider billing logic |        Details          |
 |----------|:---------------------:|:--------------------------|--------------------------|
 Google Cloud Run C++ Wrappers | ✅ | Runtime x Allocated Memory| You can choose CPU and Memory seperately |
-AWS Lambda C++ Wrappers | ✅ |Runtime * Allocated Memory| Proceed with caution, You can choose only Memory|
+AWS Lambda C++ Wrappers | ✅ |Runtime x Allocated Memory| Proceed with caution, You can choose only Memory|
 Azure Functions C++ Wrappers | WIP | 
 Google Cloud functions C++ Wrappers | ⛔ | 
 
