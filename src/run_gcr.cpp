@@ -15,8 +15,8 @@ using string = std::string;
 
 struct bert_options {
     const char* model = nullptr;
-    int32_t n_max_tokens = 0;
-    int32_t batch_size = 32;
+    int32_t n_max_tokens = 64;
+    int32_t batch_size = 1;
     bool use_cpu = false;
     bool normalize = true;
     int32_t n_threads = 6;
@@ -30,7 +30,7 @@ private:
 public:
     
     BertApp(const char* model_path, 
-            int32_t n_max_tokens = 512, 
+            int32_t n_max_tokens = 64, 
             bool use_cpu = true, 
             int32_t n_threads = 6,
             int32_t batch_size = 1, 
@@ -38,12 +38,12 @@ public:
 
         options.model = model_path;
         options.use_cpu = use_cpu;
-        options.n_threads = n_threads;
         options.n_max_tokens = n_max_tokens;
         options.batch_size = batch_size;
         options.normalize = normalize;
         unsigned int max_threads = std::thread::hardware_concurrency();
         printf("Max threads %d\n", max_threads);
+        options.n_threads = max_threads;
 
         ggml_time_init();
         int64_t t_start_us = ggml_time_us();
@@ -120,10 +120,10 @@ std::unique_ptr<BertApp> app; // Global app instance
 void ensureAppInstance(const json& bodyJson) {
     // Default values
     std::string model_path = "/opt/bge-base-en-v1.5-q4_0.gguf";
-    int32_t n_max_tokens = 512;
+    int32_t n_max_tokens = 64;
     bool use_cpu = true;
     int32_t n_threads = 6;
-    int32_t batch_size = 4;
+    int32_t batch_size = 1;
     bool normalize = true;
 
     // Update values based on payload
