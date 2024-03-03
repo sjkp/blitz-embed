@@ -7,16 +7,15 @@
 
 | Serverless Provider | Dev Status | Provider billing logic |        Recommendation          |
 |----------|:---------------------:|:--------------------------|--------------------------|
-Google Cloud Run C++ Wrappers | ✅ | **Billed by pure usage CPU x Memory**| Works well |
-AWS Lambda C++ Wrappers | ✅ |Billed by CPU usage x Provisioned Memory| proceed with caution, read below|
+Google Cloud Run C++ Wrappers | ✅ | **Usage: CPU x Memory**| Works well |
+AWS Lambda C++ Wrappers | ✅ |CPU usage x Provisioned Memory| Proceed with caution, read below|
+Azure Functions C++ Wrappers | WIP | 
 Google Cloud functions C++ Wrappers | ⛔ | 
-Azure Functions C++ Wrappers | ⛔ | 
 
------
-<br/>
-<br/>
 
-**<font color="red">\[WHY AWS LAMBDA IS NOT FOR ALL\]:</font>** 
+### **<font color="red">\[WHY AWS LAMBDA IS NOT FOR ALL\]:</font>** 
+----
+
 
 **Due to their billing logic:**  C++ Inference runs are CPU bound but needs very less working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get more CPUs is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
 
