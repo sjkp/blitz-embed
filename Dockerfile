@@ -49,13 +49,13 @@ WORKDIR /app
 COPY --from=build /content/blitz-embed/build/bin/* /app/
 COPY --from=build /content/blitz-embed/build/src/libbert.so /app/
 COPY --from=build /content/blitz-embed/build/ggml/src/libggml.so /app/
-COPY --from=build /opt/bge-base-en-v1.5-q4_0.gguf /app/
+COPY --from=build /opt/bge-base-en-v1.5-q4_0.gguf /opt/bge-base-en-v1.5-q4_0.gguf
 
 # Adjust permissions
 RUN chmod +x /app/*
 RUN chmod 644 /app/libbert.so
 RUN chmod 644 /app/libggml.so  
-RUN chmod 644 /app/bge-base-en-v1.5-q4_0.gguf
+RUN chmod 644 /opt/bge-base-en-v1.5-q4_0.gguf
 
 ENV LD_LIBRARY_PATH=/app:$LD_LIBRARY_PATH
 
