@@ -2,7 +2,13 @@
   <img alt="Blitz-Embed Library Icon" src="logo2.png" width="100%">
 </p>
 
-**<font color="red">\[IMPORTANT UPDATE FOR AWS LAMBDA USERS\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get best runtime performance is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. AWS is also open about it. See image below. 
+## Status - \[updated 3rd March 2024\]
+| Serverless Provider | Dev Status | Provider billing remarks                  
+|----------|:---------------------:|--------------------------|
+Google Cloud Run C++ Wrappers | ✅ | **Billed by pure usage CPU x Memory**|
+AWS Lambda C++ Wrappers | ✅ |Billed by CPU usage x Provisioned Memory|
+Google Cloud functions C++ Wrappers | ⛔ | 
+Azure Functions C++ Wrappers | ⛔ | 
 
 **<font color="red">\[DO NOT LAUNCH WITH AWS LAMBDA\]:</font>** Until,
 
@@ -10,18 +16,13 @@
 - Option 2: Or Charged us for run time x used memory (and not allocated memory).
 - (I will update this notice if either happens.)
 
-**\[ALTERNATE\]:**
 
-As previously commited in the roadmap (below), Working to extend this to run with Azure functions (as they surely charge for memory used / observed and not allocated. AFAIK same is the case for google cloud run.)
+**<font color="red">\[WHEN NOT TO USE AWS LAMBDA\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get best runtime performance is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
 
+**References:**
 
 - [AWS lambda pricing](https://lnkd.in/eu6k4e-3)
 - [Azure functions pricing](https://azure.microsoft.com/en-us/pricing/details/functions/)
-
-<p align="center">
-  <img alt="AWS Scam" src="aws_scam.png" width="30%">
-</p>
-
 
 
 ## What is it ?
@@ -45,12 +46,14 @@ C++ inference wrappers for running blazing fast embedding services on your favou
  
 
 ### Contributions:
-- C++ AWS Lambda handler for GGML bert. [[Jump to "Get started"]]()
+- C++ AWS Lambda handler for GGML bert. 
+- C++ Google Cloud Run handler for GGML bert. 
 - Prepackaged Dockerfiles for AWS Lambda.
+- Prepackaged Dockerfiles for Google cloud run.
 - GGUF files in `HuggingFace`.
 
 ### Roadmap
-<details>
+<details open>
 <summary>Features</summary>
 
 - C++ GCP functions handler + Docker file.
@@ -65,10 +68,81 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 `Quantisation Jesus Tim Dettmers` has argued in the [15th min of this video](https://www.youtube.com/watch?v=y9PHWGOa8HA) and in this [paper](https://arxiv.org/pdf/2212.09720.pdf)
 that 4-bit quantisation yields "best bit by bit performance" for a model.
 
+### How Install & launch a embedding service as Google Cloud Run service?
+<details>
+<summary>Steps Involved</summary>
+
+```sh
+
+# 1.Clone repo
+
+git clone https://github.com/PrithivirajDamodaran/blitz-embed.git
+cd blitz-embed
+mv Dockerfile-gcr Dockerfile
+
+# 2. Setup Serverless for Google Cloud if you haven't
+
+    Get your google project id
+
+# 3. Run
+```
+
+```sh
+# ensure docker daemon is running
+docker build --no-cache --platform linux/amd64 -t gcr.io/<your_project_id>/blitz-embed:v1 .
+gcloud auth configure-docker
+gcloud auth login
+docker push gcr.io/<your_project_id>/blitz-embed:v1
+# verify image in cloud console
+gcloud run deploy blitz-embed --image gcr.io/<your_project_id>/blitz-embed:v1 --platform managed --region <your-region> --allow-unauthenticated --memory=4Gi --cpu=8 --project <your_project_id>
+#--allow-unauthenticated is only for testing, you need to protect your end point
+
+# You will get an endpoint like https://blitz-embed-<get_your_own>.run.app
+
+```
+</details>
+
+### Calling AWS Lambda embedding service in your app
+<details>
+<summary>Python snippet</summary>
+
+```python
+import requests
+import json
+import time
+import numpy as np
+
+url = 'https://blitz-embed-<get_your_own>.run.app'
+payload = {
+    "sent": [
+            "All technical managers must have hands-on experience. For example, managers of software teams must spend at least 20% of their time coding. Solar roof managers must spend time on the roofs doing installations. Otherwise, they are like a cavalry leader who can't ride a horse or a general who can't use a sword.",
+            "It's OK to be wrong. Just don't be confident and wrong.",
+            "Never ask your troops to do something you're not willing to do.",
+            "The only rules are the ones dictated by the laws of physics. Everything else is a recommendation.",
+            "When hiring, look for people with the right attitude. Skills can be taught. Attitude requires a brain transplant.",
+            "Whenever there are problems to solve, don't just meet with your managers. Do a skip level, where you meet with the right below your managers."
+        ],
+    "model": "/opt/bge-base-en-v1.5-q4_0.gguf", 
+    "batch_size": 6,
+    "max_len": 64,
+    "normalise": True,
+}
+
+resp = requests.post(url=url, json=payload)
+resp_obj = resp.json()
+resp_body = json.loads(resp_obj["body"])
+
+embeds = json.loads(resp_body["embedding"])
+emb = np.array(embeds, dtype="float32")
+print("Tokenisation and Inference time", round(resp_body["itime"], 1) * 0.001, " ms") # / 1000 as I am returning time in microseconds
+```
+</details>
 
 
-### Install & launch a embedding service in AWS Lambda
-<details open>
+
+
+### How Install & launch a embedding service as AWS Lambda?
+<details>
 <summary>Steps Involved</summary>
 
 ```sh
@@ -100,8 +174,8 @@ serverless deploy
 ```
 </details>
 
-### Calling embedding service in your app
-<details open>
+### Calling AWS Lambda embedding service in your app
+<details>
 <summary>Python snippet</summary>
 
 ```python
