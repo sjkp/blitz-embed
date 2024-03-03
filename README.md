@@ -7,7 +7,7 @@
 **<font color="red">\[DO NOT WITH AWS LAMBDA\]:</font>** Until,
 
 - Option 1: Either AWS allows us to increase vCPUs without having to increase memory.
-- Option 2: Or Charged for run time x used memory (and not allocated memory).
+- Option 2: Or Charged us for run time x used memory (and not allocated memory).
 - (I will update this notice if either happens.)
 
 **\[ALTERNATE\]:**
