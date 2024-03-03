@@ -2,7 +2,7 @@
   <img alt="Blitz-Embed Library Icon" src="logo2.png" width="100%">
 </p>
 
-**<font color="red">\[IMPORTANT UPDATE FOR AWS LAMBDA USERS\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. **AWS lambda charges you based on the runtime x provisioned or allocated memory. (unlike Azure functions or Google cloud run not consumed memory or observed memory)**. Only way to get best runtime performance is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. AWS is also open about it. See image below. 
+**<font color="red">\[IMPORTANT UPDATE FOR AWS LAMBDA USERS\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. **AWS lambda charges you based on the runtime x provisioned** (allocated memory) **NOT consumed memory or observed memory** (unlike Azure functions or Google cloud run). With AWS only way to get best runtime performance is to increase the memory to max which will blow up the $. Thanks to a user pointing this out while testing in low memory settings. AWS is also open about it. See image below. 
 
 **<font color="red">\[DO NOT WITH AWS LAMBDA\]:</font>** Until,
 
