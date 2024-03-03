@@ -17,7 +17,7 @@ Google Cloud functions C++ Wrappers | ⛔ |
 ----
 
 
-**Due to their billing logic:**  C++ Inference runs are CPU bound but needs very less working memory. **AWS lambda charges you based on the runtime X provisioned memory** (allocated memory). So only way to get max CPUs is to set memory to 10Gb but ut blow up the lambda cost. Thanks to a user pointing this out while testing in low memory settings. [AWS is also open about it](aws_scam.png)
+**Due to their resource scaling logic:**  C++ Inference runs are CPU bound but needs very less working memory. While like all serverless lambda charges you based on the runtime X provisioned memory, **you cannot choose vCPUs and Memory seperately to get max CPUs is to set memory to 10Gb** and it blow up the lambda cost. [AWS is also open about it](aws_scam.png)
 
 Here is a math on who can go for AWS Lambda serverless embedding:
 
