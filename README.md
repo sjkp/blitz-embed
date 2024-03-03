@@ -104,7 +104,7 @@ gcloud auth configure-docker
 gcloud auth login
 docker push gcr.io/<your_project_id>/blitz-embed:v1
 # verify image in cloud console
-gcloud run deploy blitz-embed --image gcr.io/<your_project_id>/blitz-embed:v1 --platform managed --region <your-region> --allow-unauthenticated --memory=4Gi --cpu=8 --project <your_project_id>
+gcloud run deploy blitz-embed --image gcr.io/<your_project_id>/blitz-embed:v1 --platform managed --region <your-region> --allow-unauthenticated --memory=4Gi --cpu=8 --project <your_project_id> --concurrency=10 
 #--allow-unauthenticated is only for testing, you need to protect your end point
 
 # You will get an endpoint like https://blitz-embed-<get_your_own>.run.app
