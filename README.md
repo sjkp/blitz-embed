@@ -25,7 +25,7 @@ Here is a math on what to expect if you run AWS Lambda serverless:
 - Batch = 1, 512 tokens it takes ~1000ms at 10GB rate you can do max of 37K embeddings before you exhaust your free quota. 
 - After that at this rate it will cost $0.36 / Million tokens.
 - Batch = 6, 64 tokens each takes ~673ms at 10GB rate you can do max of 60K embeddings before you exhaust your free quota.
-- - After that at this rate it will cost $0.291 / Million tokens.
+- After that at this rate it will cost $0.291 / Million tokens.
 
 This is all to say in AWS high volume (1M+) embeddings would cost a lot.
 
