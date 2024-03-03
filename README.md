@@ -4,11 +4,11 @@
 
 **<font color="red">\[IMPORTANT UPDATE FOR AWS LAMBDA USERS\]:</font>** C++ Inference runs are CPU bound but needs very low working memory. AWS lambda charges you based on the runtime x memory allocated. (unlike Azure functions or Google cloud run not consumed memory or observed memory). That is totally against the philosophy of "pay-per-use". So with AWS only way to get best runtime performance with AWS is to increase the memory to max which will blow up the cost. Thanks to a user pointing this out while testing in low memory settings. AWS is open about it. See image below. 
 
-**<font color="red">\[DON'T WITH AWS LAMBDA\]:</font>** Unless,
+**<font color="red">\[DON'T WITH AWS LAMBDA\]:</font>** Until,
 
 - Option 1: Either AWS allows us to increase vCPUs without having to increase memory.
 - Option 2: Or Charged for run time x used memory (and not allocated memory).
-(I will update this notice if either happens.)
+- (I will update this notice if either happens.)
 
 **\[ALTERNATE\]:**
 
@@ -16,7 +16,7 @@ Working to extend this to run with Azure functions (as they surely charge for me
 
 
 - [AWS lambda pricing](https://lnkd.in/eu6k4e-3)
-- [Azure functions pricing] (https://azure.microsoft.com/en-us/pricing/details/functions/)
+- [Azure functions pricing](https://azure.microsoft.com/en-us/pricing/details/functions/)
 
 <p align="center">
   <img alt="AWS Scam" src="aws_scam.png" width="30%">
