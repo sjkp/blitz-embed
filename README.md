@@ -12,7 +12,7 @@
 
 **\[ALTERNATE\]:**
 
-Working to extend this to run with Azure functions (as they surely charge for memory used / observed and not allocated. AFAIK same is the case for google cloud run.)
+As previously commited in the roadmap (below), Working to extend this to run with Azure functions (as they surely charge for memory used / observed and not allocated. AFAIK same is the case for google cloud run.)
 
 
 - [AWS lambda pricing](https://lnkd.in/eu6k4e-3)
