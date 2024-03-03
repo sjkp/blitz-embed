@@ -79,7 +79,7 @@ public:
             // Use bert_encode_batch to process all prompts
             bert_encode_batch(bctx.get(), prompts, embed.data(), options.normalize, options.n_threads);
             int64_t t_infer_us = ggml_time_us() - t_start_us;
-            fprintf(stderr, "Tokenise and Infer time = %0.2f ms", t_infer_us / 1000.0); 
+            fprintf(stderr, "Tokenise and Infer time = %0.2f ms\n", t_infer_us / 1000.0); 
 
 
             // Format the embeddings into a list of lists
@@ -115,39 +115,40 @@ public:
 };
 
 
-std::unique_ptr<BertApp> app; // Global app instance
+// std::unique_ptr<BertApp> app; // Global app instance
 
-void ensureAppInstance(const json& bodyJson) {
-    // Default values
-    std::string model_path = "/opt/bge-base-en-v1.5-q4_0.gguf";
-    int32_t n_max_tokens = 64;
-    bool use_cpu = true;
-    int32_t n_threads = 6;
-    int32_t batch_size = 1;
-    bool normalize = true;
+// void ensureAppInstance(const json& bodyJson) {
+//     // Default values
+//     std::string model_path = "/opt/bge-base-en-v1.5-q4_0.gguf";
+//     int32_t n_max_tokens = 64;
+//     bool use_cpu = true;
+//     int32_t n_threads = 6;
+//     int32_t batch_size = 1;
+//     bool normalize = true;
 
-    // Update values based on payload
-    if (bodyJson.find("model") != bodyJson.end() && !bodyJson["model"].empty()) {
-        model_path = bodyJson["model"].get<std::string>();
-    }
-    if (bodyJson.find("max_len") != bodyJson.end() && bodyJson["max_len"].is_number_integer()) {
-        n_max_tokens = bodyJson["max_len"].get<int32_t>();
-    }
-    if (bodyJson.find("batch_size") != bodyJson.end() && bodyJson["batch_size"].is_number_integer()) {
-        batch_size = bodyJson["batch_size"].get<int32_t>();
-    }
-    if (bodyJson.find("normalize") != bodyJson.end()) {
-        normalize = bodyJson["normalize"].get<bool>();
-    }
+//     // Update values based on payload
+//     if (bodyJson.find("model") != bodyJson.end() && !bodyJson["model"].empty()) {
+//         model_path = bodyJson["model"].get<std::string>();
+//     }
+//     if (bodyJson.find("max_len") != bodyJson.end() && bodyJson["max_len"].is_number_integer()) {
+//         n_max_tokens = bodyJson["max_len"].get<int32_t>();
+//     }
+//     if (bodyJson.find("batch_size") != bodyJson.end() && bodyJson["batch_size"].is_number_integer()) {
+//         batch_size = bodyJson["batch_size"].get<int32_t>();
+//     }
+//     if (bodyJson.find("normalize") != bodyJson.end()) {
+//         normalize = bodyJson["normalize"].get<bool>();
+//     }
 
-    // Instantiate or re-instantiate app based on the model change
-    if (!app || bodyJson.find("model") != bodyJson.end()) {
-        app = std::make_unique<BertApp>(model_path.c_str(), n_max_tokens, use_cpu, n_threads, batch_size, normalize);
-    }
-}
+//     // Instantiate or re-instantiate app based on the model change
+//     if (!app || bodyJson.find("model") != bodyJson.end()) {
+//         app = std::make_unique<BertApp>(model_path.c_str(), n_max_tokens, use_cpu, n_threads, batch_size, normalize);
+//     }
+// }
 
 int main() {
     using namespace httplib;
+    std::unique_ptr<BertApp> app; 
 
     Server svr;
 
@@ -155,7 +156,34 @@ int main() {
         json bodyJson = json::parse(req.body);
 
         // Ensure app instance is correct before handling the request
-        ensureAppInstance(bodyJson);
+        // ensureAppInstance(bodyJson);
+
+        std::string model_path = "/opt/bge-base-en-v1.5-q4_0.gguf";
+        int32_t n_max_tokens = 64;
+        bool use_cpu = true;
+        int32_t n_threads = 6;
+        int32_t batch_size = 1;
+        bool normalize = true;
+
+        // Update values based on payload
+        if (bodyJson.find("model") != bodyJson.end() && !bodyJson["model"].empty()) {
+            model_path = bodyJson["model"].get<std::string>();
+        }
+        if (bodyJson.find("max_len") != bodyJson.end() && bodyJson["max_len"].is_number_integer()) {
+            n_max_tokens = bodyJson["max_len"].get<int32_t>();
+        }
+        if (bodyJson.find("batch_size") != bodyJson.end() && bodyJson["batch_size"].is_number_integer()) {
+            batch_size = bodyJson["batch_size"].get<int32_t>();
+        }
+        if (bodyJson.find("normalize") != bodyJson.end()) {
+            normalize = bodyJson["normalize"].get<bool>();
+        }
+
+        // // Instantiate or re-instantiate app based on the model change
+        // if (!app || bodyJson.find("model") != bodyJson.end()) {
+        app = std::make_unique<BertApp>(model_path.c_str(), n_max_tokens, use_cpu, n_threads, batch_size, normalize);
+        // }
+
 
         auto sentArray = bodyJson["sent"].get<std::vector<std::string>>();
         json body_json = app->run(sentArray);
