@@ -151,27 +151,47 @@ public:
 //     }
 // }
 
+// std::unordered_map<std::string, std::shared_ptr<BertApp>> appInstances;
+// std::mutex appInstancesMutex; // For thread-safe access to appInstances
+
+// std::shared_ptr<BertApp> getOrCreateBertApp(const std::string& model_path, int32_t n_max_tokens, bool use_cpu, int32_t n_threads, int32_t batch_size, bool normalize) {
+//     std::lock_guard<std::mutex> lock(appInstancesMutex);
+
+//     // Construct a unique key for each configuration
+//     std::string key = model_path + "_" + std::to_string(n_max_tokens) + "_" + (use_cpu ? "cpu" : "gpu") + "_" + std::to_string(n_threads) + "_" + std::to_string(batch_size) + "_" + (normalize ? "norm" : "nonorm");
+
+//     // Try to find an existing BertApp instance
+//     auto it = appInstances.find(key);
+//     if (it != appInstances.end()) {
+//         // Found an existing instance, return it
+//         return it->second;
+//     } else {
+//         // No existing instance, create a new one
+//         auto app = std::make_shared<BertApp>(model_path.c_str(), n_max_tokens, use_cpu, n_threads, batch_size, normalize);
+//         appInstances[key] = app;
+//         return app;
+//     }
+// }
+
+
 std::unordered_map<std::string, std::shared_ptr<BertApp>> appInstances;
-std::mutex appInstancesMutex; // For thread-safe access to appInstances
+std::mutex appInstancesMutex; 
 
 std::shared_ptr<BertApp> getOrCreateBertApp(const std::string& model_path, int32_t n_max_tokens, bool use_cpu, int32_t n_threads, int32_t batch_size, bool normalize) {
     std::lock_guard<std::mutex> lock(appInstancesMutex);
 
-    // Construct a unique key for each configuration
-    std::string key = model_path + "_" + std::to_string(n_max_tokens) + "_" + (use_cpu ? "cpu" : "gpu") + "_" + std::to_string(n_threads) + "_" + std::to_string(batch_size) + "_" + (normalize ? "norm" : "nonorm");
+    std::string key = std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
-    // Try to find an existing BertApp instance
     auto it = appInstances.find(key);
     if (it != appInstances.end()) {
-        // Found an existing instance, return it
         return it->second;
     } else {
-        // No existing instance, create a new one
         auto app = std::make_shared<BertApp>(model_path.c_str(), n_max_tokens, use_cpu, n_threads, batch_size, normalize);
         appInstances[key] = app;
         return app;
     }
 }
+
 
 int main() {
     using namespace httplib;
@@ -179,8 +199,14 @@ int main() {
 
     Server svr;
 
+    int n_threads_http = 5;
+    svr.new_task_queue = [n_threads_http]() {
+        return new httplib::ThreadPool(n_threads_http);
+    };
+
+
     svr.Post("/", [&](const Request& req, Response& res) {
-        std::async(std::launch::async, [&req, &res]() {
+        // std::async(std::launch::async, [&req, &res]() {
             json bodyJson = json::parse(req.body);
 
             // Ensure app instance is correct before handling the request
@@ -220,7 +246,7 @@ int main() {
 
             std::string result = result_json.dump();
             res.set_content(result, "application/json");
-        });
+        // });
     });
 
     std::string port = std::getenv("PORT") ? std::getenv("PORT") : "8080";
