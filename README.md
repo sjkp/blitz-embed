@@ -7,8 +7,8 @@
 
 | Serverless Provider | Dev Status | Provider billing logic |        Details          |
 |----------|:---------------------:|:--------------------------|--------------------------|
-Google Cloud Run C++ Wrappers | ✅ | Runtime x Allocated Memory| You can choose CPU and Memory seperately |
-AWS Lambda C++ Wrappers | ✅ |Runtime x Allocated Memory| You can choose only Memory |
+Google Cloud Run C++ Wrappers | ✅ | Runtime **AND** Allocated Memory| You can choose CPU and Memory seperately |
+AWS Lambda C++ Wrappers | ✅ |Runtime **X** Allocated Memory| You can choose only Memory |
 Azure Functions C++ Wrappers | WIP | 
 Google Cloud functions C++ Wrappers | ⛔ | 
 
@@ -27,7 +27,7 @@ Google Cloud functions C++ Wrappers | ⛔ |
 - *tests ran on 4-bit GGML bge-base-en-v1.5*
 - *pricing based on ap-south1(mumbai)*
 
-**Google cloud run** (has a free quota of 2 M req per mon, 360K GB-seconds of memory per mon 180K vCPU-sec).
+**Google cloud run** (has a free quota of 2 M req per mon, 360K GB-seconds of memory per mon and 180K vCPU-sec).
 
 | Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
