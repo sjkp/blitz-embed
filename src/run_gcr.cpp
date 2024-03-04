@@ -209,7 +209,7 @@ int main() {
         // std::async(std::launch::async, [&req, &res]() {
             json bodyJson = json::parse(req.body);
 
-            Ensure app instance is correct before handling the request
+            // Ensure app instance is correct before handling the request
             ensureAppInstance(bodyJson);
 
             // std::string model_path = "/opt/bge-base-en-v1.5-q4_0.gguf";
