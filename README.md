@@ -21,8 +21,8 @@ Google Cloud functions C++ Wrappers | ⛔ |
 
 | Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
-| 1          | 512              | ~1100     | 6/10GB | 37K                   | $0.36 / Million tokens   |
-| 6          | 64               | ~750      | 6/10GB | 60K                   | $0.291 / Million tokens  |
+| 1          | 512              | ~1100     | 6/10GB | 37K texts (18M free tokens)                   | $0.36 / Million tokens   |
+| 6          | 64               | ~750      | 6/10GB | 60K   (30M free tokens)                 | $0.291 / Million tokens  |
 
 *pricing based on ap-south1(mumbai)*
 
@@ -30,8 +30,8 @@ Google Cloud functions C++ Wrappers | ⛔ |
 
 | Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
-| 1          | 512              | ~1300     | 8/4GB | 17K                   | $0.51 / Million tokens   |
-| 6          | 64               | ~900      | 8/4GB | 25K                   | $0.35 / Million tokens  |
+| 1          | 512              | ~1300     | 8/4GB | 17K  (8M free tokens)                 | $0.51 / Million tokens   |
+| 6          | 64               | ~900      | 8/4GB | 25K   (12.8M free tokens)                 | $0.35 / Million tokens  |
 
 *pricing based on us-central1*
 
