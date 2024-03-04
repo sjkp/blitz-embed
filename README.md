@@ -17,23 +17,25 @@ Google Cloud functions C++ Wrappers | ⛔ |
 ----
 
 
-**AWS has a free quota of 1M req /mo and 400,000 GB-sec**.
+**AWS** (has a free quota of 1M req /mo and 400,000 GB-sec).
 
 | Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
 | 1          | 512              | ~1100     | 6/10GB | 37K texts (18M free tokens)                   | $0.36 / Million tokens   |
 | 6          | 64               | ~750      | 6/10GB | 60K   (30M texts free tokens)                 | $0.291 / Million tokens  |
 
-*pricing based on ap-south1(mumbai)*
+- *tests ran on 4-bit GGML bge-base-en-v1.5*
+- *pricing based on ap-south1(mumbai)*
 
-**Google cloud run has a free quota of 2 million requests per month 360,000 GB-seconds of memory per month 180,000 vCPU-seconds.**
+**Google cloud run** (has a free quota of 2 M req per mon, 360K GB-seconds of memory per mon 180K vCPU-sec).
 
 | Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
 | 1          | 512              | ~1300     | 8/4GB | 17K texts (8M free tokens)                 | $0.51 / Million tokens   |
 | 6          | 64               | ~900      | 8/4GB | 25K  texts (12.8M free tokens)                 | $0.35 / Million tokens  |
 
-*pricing based on us-central1*
+- *tests ran on 4-bit GGML bge-base-en-v1.5*
+- *pricing based on us-central1*
 
 **References:**
 
