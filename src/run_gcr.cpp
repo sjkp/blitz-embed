@@ -10,9 +10,9 @@
 #include <thread>
 #include "json.hpp"
 
-#include <unordered_map>
-#include <mutex>
-#include <future>
+// #include <unordered_map>
+// #include <mutex>
+// #include <future>
 
 
 using json = nlohmann::json;
@@ -195,7 +195,7 @@ void ensureAppInstance(const json& bodyJson) {
 
 int main() {
     using namespace httplib;
-    std::unique_ptr<BertApp> app; 
+    // std::unique_ptr<BertApp> app; 
 
     Server svr;
 
