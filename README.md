@@ -74,7 +74,6 @@ C++ inference wrappers for running blazing fast embedding services on your favou
 <details open>
 <summary>Features</summary>
 
-- C++ GCP functions handler + Docker file.
 - C++ Azure functions handler + Docker file.
 - Add support for embeddders like BGE-M3, allmpnet, SPLADE models.
 - Add support for Matryoshka embeddings.
