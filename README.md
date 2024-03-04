@@ -19,7 +19,7 @@ Google Cloud functions C++ Wrappers | ⛔ |
 
 **AWS has a free quota of 1M req /mo and 400,000 GB-sec**.
 
-| Batch Size | Tokens per text | Time (ms) | CPU/Mem | Embeddings You can create in Free quora | Cost After Quota         |
+| Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
 | 1          | 512              | ~1100     | 6/10GB | 37K                   | $0.36 / Million tokens   |
 | 6          | 64               | ~750      | 6/10GB | 60K                   | $0.291 / Million tokens  |
@@ -28,7 +28,7 @@ Google Cloud functions C++ Wrappers | ⛔ |
 
 **Google cloud run has a free quota of 2 million requests per month 360,000 GB-seconds of memory per month 180,000 vCPU-seconds.**
 
-| Batch Size | Tokens per text | Time (ms) | CPU/Mem | Embeddings You can create in Free quora | Cost After Quota         |
+| Batch Size | Tokens per text | Time (ms) | CPU/Mem | # Embeddings in Free quota | Cost After Quota         |
 |------------|------------------|-----------|------|:-----------------------:|--------------------------|
 | 1          | 512              | ~1300     | 8/4GB | 17K                   | $0.51 / Million tokens   |
 | 6          | 64               | ~900      | 8/4GB | 25K                   | $0.35 / Million tokens  |
