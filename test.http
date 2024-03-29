@@ -1,0 +1,13 @@
+POST http://localhost:8080
+Content-Type: application/json
+api-key: test
+
+{
+    "sent": [
+            "hyper-v"
+        ],
+    "model": "/opt/bge-base-en-v1.5-q4_0.gguf", 
+    "batch_size": 6,
+    "max_len": 64,
+    "normalise": true
+}

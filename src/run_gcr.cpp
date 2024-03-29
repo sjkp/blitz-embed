@@ -203,9 +203,20 @@ int main() {
     // svr.new_task_queue = [n_threads_http]() {
     //     return new httplib::ThreadPool(n_threads_http);
     // };
-
+    
+    std::string apikey = std::getenv("API_KEY") ? std::getenv("API_KEY") : "";
 
     svr.Post("/", [&](const Request& req, Response& res) {
+
+            if (req.has_header("api-key") && apikey != "")
+            {
+                 std::cout << "api-key: " << req.get_header_value("api-key", 0) << std::endl;
+                 if (req.get_header_value("api-key", 0) != apikey)
+                 {
+                    res.status = StatusCode::Unauthorized_401;
+                    return;
+                 }
+            }
         // std::async(std::launch::async, [&req, &res]() {
             json bodyJson = json::parse(req.body);
 
