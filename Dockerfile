@@ -32,9 +32,7 @@ RUN dnf install -y binutils
 
 # Clone your repository and build your application
 WORKDIR /content
-RUN git clone https://github.com/PrithivirajDamodaran/blitz-embed.git && \
-    cd blitz-embed && \
-    git submodule update --init --recursive
+COPY . ./blitz-embed
 WORKDIR /content/blitz-embed
 RUN cmake -B build . && make -C build -j
 
